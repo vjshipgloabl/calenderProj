@@ -4,7 +4,8 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useEventStore } from "./zustand/store";
-import { Input } from "./components/ui/input";
+// import { Input } from "./components/ui/input";
+import { AddEvent } from "./pages/AddEvent";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -90,7 +91,7 @@ function App() {
   return (
     <>
       <h1>Calendar Project</h1>
-      <div>
+      <div className="">
         <div style={{ height: "600px" }}>
           <Calendar
             localizer={localizer}
@@ -110,11 +111,7 @@ function App() {
           slotDetails={slotDetails}
         />
         <div className="flex">
-          <AddEvent
-            newEvent={newEvent}
-            handleInputChange={handleInputChange}
-            handleSubmit={handleSubmit}
-          />
+          <AddEvent />
           <WeekData />
         </div>
       </div>
@@ -208,6 +205,7 @@ const PopOverComponent = ({
             ) : (
               ""
             )}
+            <AddEvent />
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
@@ -223,67 +221,68 @@ const PopOverComponent = ({
 
 const WeekData = () => {
   return (
-    <div className="w-full bg-slate-950">
+    <div className="w-1/2 bg-slate-950">
       <h1>Week Data</h1>
     </div>
   );
 };
 
-const AddEvent = ({
-  newEvent,
-  handleInputChange,
-  handleSubmit,
-}: {
-  newEvent: {
-    title: string;
-    start: string;
-    end: string;
-    description: string;
-    location: string;
-    isAllDay: boolean;
-    isDone: boolean;
-    isImportant: boolean;
-    isPersonal: boolean;
-    isWork: boolean;
-  };
-  handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  handleSubmit: () => void;
-}) => {
-  return (
-    <div className="w-full border-2 p-2 rounded-md mx-2">
-      <div className="w-1/2 mx-32 bg-slate-500">Add Event</div>
-      <div className="p-2 my-3 space-y-4 w-full bg-slate-500">
-        <label htmlFor="title">Title</label>
-        <Input
-          type="text"
-          name="title"
-          placeholder="Event Title"
-          value={newEvent.title}
-          onChange={handleInputChange}
-          className="w-1/2"
-        />
-        <label htmlFor="title">Start date</label>
-        <Input
-          type="datetime-local"
-          name="start"
-          value={newEvent.start}
-          onChange={handleInputChange}
-        />
-        <label htmlFor="title">End date</label>
+// const AddEvents = ({
+//   newEvent,
+//   handleInputChange,
+//   handleSubmit,
+// }: {
+//   newEvent: {
+//     title: string;
+//     start: string;
+//     end: string;
+//     description: string;
+//     location: string;
+//     isAllDay: boolean;
+//     isDone: boolean;
+//     isImportant: boolean;
+//     isPersonal: boolean;
+//     isWork: boolean;
+//   };
+//   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+//   handleSubmit: () => void;
+// }) => {
+//   return (
+//     <div className="w-full border-2 p-2 rounded-md mx-2">
+//       <div className="w-1/2 mx-32 bg-slate-500">Add Event</div>
+//       {/* <div className="p-2 my-3 space-y-4 w-full bg-slate-500">
+//         <label htmlFor="title">Title</label>
+//         <Input
+//           type="text"
+//           name="title"
+//           placeholder="Event Title"
+//           value={newEvent.title}
+//           onChange={handleInputChange}
+//           className="w-1/2"
+//         />
+//         <label htmlFor="title">Start date</label>
+//         <Input
+//           type="datetime-local"
+//           name="start"
+//           value={newEvent.start}
+//           onChange={handleInputChange}
+//         />
+//         <label htmlFor="title">End date</label>
 
-        <Input
-          type="datetime-local"
-          name="end"
-          value={newEvent.end}
-          onChange={handleInputChange}
-        />
-      </div>
-      <button
-        className="px-4 py-2 bg-blue-500 text-white rounded"
-        onClick={handleSubmit}
-      >
-        Add Event
-      </button>
-    </div>
-  );
-};
+//         <Input
+//           type="datetime-local"
+//           name="end"
+//           value={newEvent.end}
+//           onChange={handleInputChange}
+//         />
+//       </div>
+//       <button
+//         className="px-4 py-2 bg-blue-500 text-white rounded"
+//         onClick={handleSubmit}
+//       >
+//         Add Event
+//       </button> */}
+//       <AddEvent />
+//     </div>
+//   );
+// };
