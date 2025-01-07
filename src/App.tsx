@@ -1,28 +1,9 @@
-import "./App.css";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useEventStore } from "./zustand/store";
-// import { Input } from "./components/ui/input";
-import { AddEvent } from "./pages/AddEvent";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { PopOverComponent } from "./components/parts/PopOverComponent";
 
 const localizer = momentLocalizer(moment);
 
@@ -81,7 +62,7 @@ function App() {
     setEvents(storedEvents);
   }, [storedEvents]);
 
-  console.log("Stored events:", storedEvents); // Logs the stored events in Zustand
+  console.log("Stored events:", storedEvents);
 
   const onSelectSlot = useCallback((slotInfo: any) => {
     console.log("Slot selected:", slotInfo);
@@ -89,135 +70,34 @@ function App() {
     setShowPopover(true);
   }, []);
   return (
-    <>
+    <div className="bg-gray-200 w-full h-screen m-0 p-0">
       <h1>Calendar Project</h1>
-      <div className="">
-        <div style={{ height: "600px" }}>
-          <Calendar
-            localizer={localizer}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: 500 }}
-            events={events}
-            onSelectSlot={onSelectSlot}
-            onSelectEvent={(event) => console.log("Event selected:", event)}
-            selectable
-          />
-        </div>
-        <PopOverComponent
-          open={showPopover}
-          setOpen={setShowPopover}
-          event={events}
-          slotDetails={slotDetails}
+      <div
+        style={{ height: "600px" }}
+        className="w-3/6 ml-32 mt-12 bg-white border-2 rounded-md"
+      >
+        <Calendar
+          localizer={localizer}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ height: 500 }}
+          events={events}
+          onSelectSlot={onSelectSlot}
+          onSelectEvent={(event) => console.log("Event selected:", event)}
+          selectable
         />
-        <div className="flex">
-          <AddEvent />
-          <WeekData />
-        </div>
       </div>
-    </>
+      <PopOverComponent
+        open={showPopover}
+        setOpen={setShowPopover}
+        event={events}
+        slotDetails={slotDetails}
+      />
+    </div>
   );
 }
 
 export default App;
-
-const PopOverComponent = ({
-  open,
-  setOpen,
-  event,
-  slotDetails,
-}: {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  event: {
-    id: number;
-    title: string;
-    start: Date;
-    end: Date;
-    description: string;
-  }[];
-  slotDetails: any;
-}) => {
-  return (
-    <AlertDialog open={open}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <div className="flex justify-between">
-            <AlertDialogTitle>Events</AlertDialogTitle>
-            <div
-              className="flex justify-between items-center"
-              onClick={() => console.log(slotDetails)}
-            >
-              Band Karna hai to yaha click kare
-            </div>
-          </div>
-          <AlertDialogDescription>
-            {event.length !== 0 ? (
-              event.filter((evt) => {
-                const eventStart = new Date(evt.start);
-                const eventEnd = new Date(evt.end);
-                const slotStart = new Date(slotDetails.start);
-                const slotEnd = new Date(slotDetails.end);
-                return (
-                  (eventStart.getTime() >= slotStart.getTime() &&
-                    eventStart.getTime() <= slotEnd.getTime()) ||
-                  (eventEnd.getTime() >= slotStart.getTime() &&
-                    eventEnd.getTime() <= slotEnd.getTime())
-                );
-              }).length !== 0 ? (
-                event
-                  .filter((evt) => {
-                    const eventStart = new Date(evt.start);
-                    const eventEnd = new Date(evt.end);
-                    const slotStart = new Date(slotDetails.start);
-                    const slotEnd = new Date(slotDetails.end);
-                    return (
-                      (eventStart.getTime() >= slotStart.getTime() &&
-                        eventStart.getTime() <= slotEnd.getTime()) ||
-                      (eventEnd.getTime() >= slotStart.getTime() &&
-                        eventEnd.getTime() <= slotEnd.getTime())
-                    );
-                  })
-                  .map((evt) => (
-                    <Accordion
-                      className="bg-slate-500"
-                      type="single"
-                      collapsible
-                      key={evt.id}
-                    >
-                      <AccordionItem value={`item-${evt.id}`}>
-                        <AccordionTrigger className="bg-blue-200 text-center">
-                          {evt.title}
-                        </AccordionTrigger>
-                        <AccordionContent>{evt.description}</AccordionContent>
-                      </AccordionItem>
-                    </Accordion>
-                  ))
-              ) : (
-                <Accordion type="single">
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger className="bg-blue-300">
-                      No Event Today
-                    </AccordionTrigger>
-                  </AccordionItem>
-                </Accordion>
-              )
-            ) : (
-              ""
-            )}
-            <AddEvent />
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setOpen(false)}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction>Add Event</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
-  );
-};
 
 const WeekData = () => {
   return (

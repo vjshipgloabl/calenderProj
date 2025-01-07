@@ -33,26 +33,49 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
 
-export const AddEvent = () => {
+export const AddEvent = ({ slotDetails }) => {
+  const date = new Date(slotDetails.start);
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const day = date.getDate();
+  const d = new Date(
+    year,
+    month,
+    day,
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds(),
+    date.getMilliseconds()
+  );
+
+  const startDate = new Date(slotDetails.start); // Assuming slotDetails.start is a valid date string
+  const endDate = new Date(slotDetails.end || slotDetails.start);
+
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
       title: "",
       description: "",
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: startDate,
+      endDate: endDate,
       isImportant: "",
+      isPersonal: 0,
     },
   });
+  console.log(startDate, form.watch("startDate"));
 
   const onSubmit = async (data: any) => {
     alert("Sdfsdfdf");
     console.log(data);
   };
 
-  function handleDateSelect(date: Date | undefined) {
+  function handleStartDateSelect(date: Date | undefined) {
     if (date) {
       form.setValue("startDate", date);
+    }
+  }
+  function handleEndDateSelect(date: Date | undefined) {
+    if (date) {
       form.setValue("endDate", date);
     }
   }
@@ -86,36 +109,26 @@ export const AddEvent = () => {
       form.setValue("endDate", newEndDate);
     }
   }
-
-  // title: "",
-  // start: "",
-  // end: "",
-  // description: "",
-  // location: "",
-  // isAllDay: false,
-  // isDone: false,
-  // isImportant: false,
-  // isPersonal: false,
-  // isWork: false,
-
   return (
-    <div className="w-1/2 m-4">
+    <div className="w-full p-2">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Title</FormLabel>
+                <FormLabel className="flex justify-between">
+                  Title <FormMessage className="text-red-600" />
+                </FormLabel>
                 <FormControl>
                   <Input placeholder="Title" type="text" {...field} />
                 </FormControl>
-                <FormMessage />
               </FormItem>
             )}
           />
           <div className="flex justify-between w-full space-x-3">
+            {/* start Date */}
             <FormField
               control={form.control}
               name="startDate"
@@ -145,14 +158,13 @@ export const AddEvent = () => {
                       <div className="sm:flex">
                         <Calendar
                           mode="single"
-                          selected={
-                            field.value ? new Date(field.value) : undefined
-                          }
-                          onSelect={handleDateSelect}
+                          selected={field.value ? field.value : startDate}
+                          onSelect={handleStartDateSelect}
                           initialFocus
+                          className="bg-white"
                         />
                         <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
-                          <ScrollArea className="w-64 sm:w-auto">
+                          <ScrollArea className="w-64 sm:w-auto bg-white">
                             <div className="flex sm:flex-col p-2">
                               {Array.from({ length: 12 }, (_, i) => i + 1)
                                 .reverse()
@@ -168,7 +180,11 @@ export const AddEvent = () => {
                                     }
                                     className="sm:w-full shrink-0 aspect-square"
                                     onClick={() =>
-                                      handleTimeChange("hour", hour.toString())
+                                      handleTimeChange(
+                                        "hour",
+                                        hour.toString(),
+                                        "start"
+                                      )
                                     }
                                   >
                                     {hour}
@@ -180,7 +196,7 @@ export const AddEvent = () => {
                               className="sm:hidden"
                             />
                           </ScrollArea>
-                          <ScrollArea className="w-64 sm:w-auto">
+                          <ScrollArea className="w-64 sm:w-auto bg-white">
                             <div className="flex sm:flex-col p-2">
                               {Array.from({ length: 12 }, (_, i) => i * 5).map(
                                 (minute) => (
@@ -197,7 +213,8 @@ export const AddEvent = () => {
                                     onClick={() =>
                                       handleTimeChange(
                                         "minute",
-                                        minute.toString()
+                                        minute.toString(),
+                                        "start"
                                       )
                                     }
                                   >
@@ -211,7 +228,7 @@ export const AddEvent = () => {
                               className="sm:hidden"
                             />
                           </ScrollArea>
-                          <ScrollArea className="">
+                          <ScrollArea className="bg-white">
                             <div className="flex sm:flex-col p-2">
                               {["AM", "PM"].map((ampm) => (
                                 <Button
@@ -276,11 +293,12 @@ export const AddEvent = () => {
                           selected={
                             field.value ? new Date(field.value) : undefined
                           }
-                          onSelect={handleDateSelect}
+                          onSelect={handleEndDateSelect}
                           initialFocus
+                          className="bg-white"
                         />
                         <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
-                          <ScrollArea className="w-64 sm:w-auto">
+                          <ScrollArea className="w-64 sm:w-auto bg-white">
                             <div className="flex sm:flex-col p-2">
                               {Array.from({ length: 12 }, (_, i) => i + 1)
                                 .reverse()
@@ -296,7 +314,11 @@ export const AddEvent = () => {
                                     }
                                     className="sm:w-full shrink-0 aspect-square"
                                     onClick={() =>
-                                      handleTimeChange("hour", hour.toString())
+                                      handleTimeChange(
+                                        "hour",
+                                        hour.toString(),
+                                        "end"
+                                      )
                                     }
                                   >
                                     {hour}
@@ -308,7 +330,7 @@ export const AddEvent = () => {
                               className="sm:hidden"
                             />
                           </ScrollArea>
-                          <ScrollArea className="w-64 sm:w-auto">
+                          <ScrollArea className="w-64 sm:w-auto bg-white">
                             <div className="flex sm:flex-col p-2">
                               {Array.from({ length: 12 }, (_, i) => i * 5).map(
                                 (minute) => (
@@ -325,7 +347,8 @@ export const AddEvent = () => {
                                     onClick={() =>
                                       handleTimeChange(
                                         "minute",
-                                        minute.toString()
+                                        minute.toString(),
+                                        "end"
                                       )
                                     }
                                   >
@@ -339,7 +362,7 @@ export const AddEvent = () => {
                               className="sm:hidden"
                             />
                           </ScrollArea>
-                          <ScrollArea className="">
+                          <ScrollArea className="bg-white">
                             <div className="flex sm:flex-col p-2">
                               {["AM", "PM"].map((ampm) => (
                                 <Button
@@ -355,7 +378,9 @@ export const AddEvent = () => {
                                       : "ghost"
                                   }
                                   className="sm:w-full shrink-0 aspect-square"
-                                  onClick={() => handleTimeChange("ampm", ampm)}
+                                  onClick={() =>
+                                    handleTimeChange("ampm", ampm, "end")
+                                  }
                                 >
                                   {ampm}
                                 </Button>
@@ -456,7 +481,7 @@ export const AddEvent = () => {
 
           <FormField
             control={form.control}
-            name="description"
+            name="isPersonal"
             render={({ field }) => (
               <FormItem className="flex space-y-0 p-1">
                 <FormLabel className="w-1/4 pt-3 text-start px-2">
@@ -464,8 +489,8 @@ export const AddEvent = () => {
                 </FormLabel>
                 <FormControl className="w-3/4 pt-3 ">
                   <div className="flex space-x-1">
-                    <Checkbox onClick={() => console.log("selected")} />
-                    <span className="text-sm text-nowrap text-red-600 mb-1">
+                    <Checkbox />
+                    <span className="text-sm text-nowrap text-red-600">
                       (Select Only if this Event is Personal)
                     </span>
                   </div>
@@ -496,4 +521,5 @@ const eventFormSchema = z.object({
   startDate: z.date(),
   endDate: z.date(),
   isImportant: z.string(),
+  isPersonal: z.number(),
 });
