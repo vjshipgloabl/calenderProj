@@ -38,9 +38,9 @@ export const PopOverComponent = ({
   console.log("here", slotDetails);
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent className="gap-2 p-2 bg-blue-100">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="flex justify-between bg-amber-100 border  rounded-lg h-12 p-2 w-full">
+      <AlertDialogContent className="p-2 border-2 rounded-lg">
+        <AlertDialogHeader className="z-100">
+          <AlertDialogTitle className="flex justify-between bg-amber-100 border-8 border-gray-900 rounded-lg h-12 p-2 w-full ">
             <div className="">
               <h3>Events</h3>
             </div>
@@ -48,7 +48,7 @@ export const PopOverComponent = ({
               <X />
             </div>
           </AlertDialogTitle>
-          <AlertDialogDescription>
+          <AlertDialogDescription className="z-100">
             {event.length !== 0 ? (
               event.filter((evt) => {
                 const eventStart = new Date(evt.start);

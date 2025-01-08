@@ -65,7 +65,6 @@ function App() {
   console.log("Stored events:", storedEvents);
 
   const onSelectSlot = useCallback((slotInfo: any) => {
-    console.log("Slot selected:", slotInfo);
     setSlotDetails(slotInfo);
     setShowPopover(true);
   }, []);
