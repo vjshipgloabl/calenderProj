@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -53,18 +52,23 @@ import { Calendar } from "@/components/ui/calendar";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
+import { useEventStore } from "@/zustand/store";
+import { eventFormSchema } from "@/schema/eventFormSchema";
 
 export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
-  const startDate = new Date(slotDetails.start);
-  const endDate = new Date(slotDetails.end || slotDetails.start);
+  const dispatch = useEventStore((state: any) => state.dispatch);
+  const start = new Date(slotDetails.start);
+  const end = new Date(slotDetails.end || slotDetails.start);
+
+  const [open, setOpen] = useState(false);
 
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
       title: "",
       description: "",
-      startDate: startDate,
-      endDate: endDate,
+      start: start,
+      end: end,
       isImportant: "",
       isPersonal: 0,
       users: [],
@@ -72,17 +76,13 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
   });
 
   const onSubmit = async (data: z.infer<typeof eventFormSchema>) => {
-    console.log("payload", data);
+    data = dispatch({ type: "ADD_EVENT", payload: data });
   };
 
-  function handleStartDateSelect(date: Date | undefined) {
+  function handlestartSelect(date: Date | undefined) {
     if (date) {
-      form.setValue("startDate", date);
-    }
-  }
-  function handleEndDateSelect(date: Date | undefined) {
-    if (date) {
-      form.setValue("endDate", date);
+      form.setValue("start", date);
+      form.setValue("end", date);
     }
   }
 
@@ -91,11 +91,11 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
     value: string,
     target: "start" | "end"
   ) {
-    const currentStartDate = form.getValues("startDate");
-    const currentEndDate = form.getValues("endDate");
-    let newStartDate = new Date(currentStartDate);
-    let newEndDate = new Date(currentEndDate);
-    const targetDate = target === "start" ? newStartDate : newEndDate;
+    const currentstart = form.getValues("start");
+    const currentend = form.getValues("end");
+    let newstart = new Date(currentstart);
+    let newend = new Date(currentend);
+    const targetDate = target === "start" ? newstart : newend;
     if (type === "hour") {
       const hour = parseInt(value, 10);
       targetDate.setHours(targetDate.getHours() >= 12 ? hour + 12 : hour);
@@ -110,13 +110,11 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
       }
     }
     if (target === "start") {
-      form.setValue("startDate", newStartDate);
+      form.setValue("start", newstart);
     } else {
-      form.setValue("endDate", newEndDate);
+      form.setValue("end", newend);
     }
   }
-
-  const [open, setOpen] = useState(false);
 
   const handleRemoveUser = (id: string) => {
     const selectedUser = form.watch("users") || [];
@@ -253,7 +251,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
             {/* start Date */}
             <FormField
               control={form.control}
-              name="startDate"
+              name="start"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full">
                   <FormLabel className="text-start">
@@ -282,8 +280,8 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                       <div className="sm:flex z-150">
                         <Calendar
                           mode="single"
-                          selected={field.value ? field.value : startDate}
-                          onSelect={handleStartDateSelect}
+                          selected={field.value ? field.value : start}
+                          onSelect={handlestartSelect}
                           initialFocus
                           className="bg-white"
                         />
@@ -383,7 +381,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
             {/* End Date */}
             <FormField
               control={form.control}
-              name="endDate"
+              name="end"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full">
                   <FormLabel className="text-start">
@@ -415,7 +413,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                           selected={
                             field.value ? new Date(field.value) : undefined
                           }
-                          onSelect={handleEndDateSelect}
+                          onSelect={handlestartSelect}
                           initialFocus
                           className="bg-white"
                         />
@@ -630,23 +628,3 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
     </div>
   );
 };
-
-const eventFormSchema = z.object({
-  title: z.string().min(3).max(20),
-  description: z.string().min(10).max(50).optional(),
-  startDate: z.date(),
-  endDate: z.date(),
-  isImportant: z.string(),
-  isPersonal: z.number(),
-  users: z
-    .array(
-      z.object({
-        id: z.string(),
-        name: z.string(),
-        email: z.string(),
-      })
-    )
-    .min(0)
-    .max(5, { message: "Only 5 guests are Allowed" })
-    .optional(),
-});

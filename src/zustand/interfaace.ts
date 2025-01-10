@@ -2,8 +2,8 @@ export interface Event {
   id: String;
   title: String;
   date: Date;
-  startTime: String;
-  endTime: String;
+  startDate: String;
+  endDate: String;
   description: String;
   location: String;
   isAllDay: Boolean;
@@ -11,14 +11,15 @@ export interface Event {
   isImportant: Boolean;
   isPersonal: Boolean;
   isWork: Boolean;
+  users: [];
 }
 
 export const initialEvent: Event = {
   id: "",
   title: "",
   date: new Date(),
-  startTime: "",
-  endTime: "",
+  startDate: "",
+  endDate: "",
   description: "",
   location: "",
   isAllDay: false,
@@ -26,4 +27,5 @@ export const initialEvent: Event = {
   isImportant: false,
   isPersonal: false,
   isWork: false,
+  users: [],
 };
