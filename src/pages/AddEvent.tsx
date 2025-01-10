@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -18,11 +19,16 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { CalendarIcon, ChevronDown } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import { format } from "date-fns";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  CalendarIcon,
+  Check,
+  CheckCheck,
+  ChevronDown,
+  ChevronsUpDown,
+  CircleX,
+  Eye,
+} from "lucide-react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,23 +37,24 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { userList } from "@/extra/userList";
+import { Calendar } from "@/components/ui/calendar";
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { format } from "date-fns";
+import { Textarea } from "@/components/ui/textarea";
 
 export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
-  const date = new Date(slotDetails.start);
-  const year = date.getFullYear();
-  const month = date.getMonth();
-  const day = date.getDate();
-  const d = new Date(
-    year,
-    month,
-    day,
-    date.getHours(),
-    date.getMinutes(),
-    date.getSeconds(),
-    date.getMilliseconds()
-  );
-
   const startDate = new Date(slotDetails.start);
   const endDate = new Date(slotDetails.end || slotDetails.start);
 
@@ -60,12 +67,12 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
       endDate: endDate,
       isImportant: "",
       isPersonal: 0,
+      users: [],
     },
   });
-  console.log(startDate, form.watch("startDate"));
 
-  const onSubmit = async (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof eventFormSchema>) => {
+    console.log("payload", data);
   };
 
   function handleStartDateSelect(date: Date | undefined) {
@@ -108,32 +115,150 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
       form.setValue("endDate", newEndDate);
     }
   }
+
+  const [open, setOpen] = useState(false);
+
+  const handleRemoveUser = (id: string) => {
+    const selectedUser = form.watch("users") || [];
+    const updatedValue = selectedUser.filter((user) => user.id !== id);
+    form.setValue("users", updatedValue);
+  };
+
   return (
-    <div className="w-full p-2">
+    <div className="w-full p-2 text-gray-600 z-150">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel className="flex justify-between">
+                <FormLabel className="flex justify-between ">
                   Title <FormMessage className="text-red-600" />
                 </FormLabel>
                 <FormControl>
-                  <Input placeholder="Title" type="text" {...field} />
+                  <Input
+                    placeholder="Title"
+                    className=""
+                    type="text"
+                    {...field}
+                  />
                 </FormControl>
               </FormItem>
             )}
           />
-          <div className="flex justify-between w-full space-x-3">
+          <div className="w-full z-150">
+            <FormField
+              control={form.control}
+              name="users"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex">
+                    <FormLabel className="w-2/4 pt-3 text-start px-1">
+                      Add Guests
+                    </FormLabel>
+                    <FormControl className="w-3/4">
+                      <Popover open={open} onOpenChange={setOpen}>
+                        <div className="flex flex-col w-full">
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={open}
+                              className="w-full justify-between"
+                            >
+                              Search & Select User
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <span className="text-xs pl-2 text-end">
+                            (Select Max 5 guest)
+                          </span>
+                        </div>
+                        <PopoverContent className="w-full p-0 bg-slate-100 rounded-lg max-h-72 overflow-y-auto">
+                          <Command className="overflow-hidden">
+                            <CommandInput placeholder="Search User" />
+                            <CommandList className="max-h-60 overflow-y-auto">
+                              <CommandEmpty>No User Available</CommandEmpty>
+                              <CommandGroup>
+                                {userList.map((user) => (
+                                  <CommandItem
+                                    key={user.id}
+                                    value={user.email}
+                                    onSelect={() => {
+                                      const currentUsers = field.value || []; // Fallback to empty array
+                                      if (currentUsers.length > 4) {
+                                        console.log(
+                                          "herer",
+                                          currentUsers.length
+                                        );
+                                      }
+                                      const isUserSelected = currentUsers.some(
+                                        (u) => u.email === user.email
+                                      );
+                                      const updatedValue = isUserSelected
+                                        ? currentUsers.filter(
+                                            (u) => u.email !== user.email
+                                          )
+                                        : [...currentUsers, user];
+                                      field.onChange(updatedValue);
+                                    }}
+                                    className="gap-0 text-wrap text-xs rounded-lg bg-gray-200 mt-1 w-full border-2"
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 h-4 w-4",
+                                        (field.value || []).some(
+                                          (u) => u.name === user.name
+                                        )
+                                          ? "opacity-100"
+                                          : "opacity-0"
+                                      )}
+                                    />
+                                    <div>
+                                      <p>{user.name}</p>
+                                      <p>{user.email}</p>
+                                    </div>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                    </FormControl>
+                  </div>
+                  <FormMessage className="text-red-600" />
+                </FormItem>
+              )}
+            />
+
+            <div className="flex flex-col pt-2 justify-end">
+              {form.watch("users")?.map((user) => (
+                <Badge
+                  key={user.id}
+                  className="bg-gray-200 text-gray-500 text-xs font-sans mb-2 px-4 flex justify-between"
+                  variant="outline"
+                >
+                  <div>{user.email}</div>
+                  <div className="flex">
+                    <Eye className="mr-2" />
+                    <CircleX onClick={() => handleRemoveUser(user.id)} />
+                  </div>
+                </Badge>
+              ))}
+            </div>
+          </div>
+          <div className="flex justify-between w-full space-x-3 ">
             {/* start Date */}
             <FormField
               control={form.control}
               name="startDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full">
-                  <FormLabel>Start date & time (12h)</FormLabel>
+                  <FormLabel className="text-start">
+                    Start date & time (12h)
+                  </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -154,7 +279,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
-                      <div className="sm:flex z-100">
+                      <div className="sm:flex z-150">
                         <Calendar
                           mode="single"
                           selected={field.value ? field.value : startDate}
@@ -261,7 +386,9 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
               name="endDate"
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full">
-                  <FormLabel>End date & time (12h)</FormLabel>
+                  <FormLabel className="text-start">
+                    End date & time (12h)
+                  </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
                       <FormControl>
@@ -396,14 +523,14 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
             render={({ field }) => (
               <FormItem>
                 <div className="flex">
-                  <FormLabel className="w-1/4 pt-3 text-start px-2">
+                  <FormLabel className="w-1/4 pt-3 text-start px-1">
                     Description
                   </FormLabel>
                   <FormControl className="w-3/4">
-                    <Textarea placeholder="Description" {...field} />
+                    <Textarea placeholder="Add Event Details... " {...field} />
                   </FormControl>
                 </div>
-                <FormMessage />
+                <FormMessage className="text-red-600" />
               </FormItem>
             )}
           />
@@ -411,8 +538,8 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
             control={form.control}
             name="isImportant"
             render={({ field }) => (
-              <FormItem className="flex space-y-0">
-                <FormLabel className="w-1/4 pt-3 text-start px-2">
+              <FormItem className="flex space-y-0 text-gray-600">
+                <FormLabel className="w-1/4 pt-3 text-start px-1">
                   Select Priority
                 </FormLabel>
                 <FormControl className="w-3/4">
@@ -423,51 +550,50 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                         field.value === "Low"
                           ? "bg-green-200"
                           : field.value === "Medium"
-                          ? "bg-amber-300"
+                          ? "bg-amber-200"
                           : field.value === "High"
-                          ? "bg-red-300"
+                          ? "bg-red-200"
                           : ""
                       } w-2/4 `}
                     >
                       <Button
                         variant="outline"
-                        className={`gap-0 py-0 border-2 flex justify-between `}
+                        className={`gap-0 py-0 flex justify-between `}
                       >
                         {field.value ? field.value : "Select Priority"}
                         <ChevronDown />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-full">
-                      <DropdownMenuLabel>Importance Level</DropdownMenuLabel>
+                    <DropdownMenuContent className="w-full bg-slate-300 ">
+                      <DropdownMenuLabel className="px-12">
+                        Importance Level
+                      </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuItem
                         onClick={() => field.onChange("Low")}
-                        className={`bg-green-300 ${
-                          field.value === "Low" ? "bg-muted" : ""
-                        }`}
+                        className={`bg-green-300 rounded-lg`}
                       >
+                        {field.value === "Low" ? <CheckCheck /> : ""}
                         Low
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => field.onChange("Medium")}
-                        className={`bg-amber-300 ${
-                          field.value === "Medium" ? "bg-muted" : ""
-                        }`}
+                        className={`bg-amber-300 rounded-lg `}
                       >
+                        {field.value === "Medium" ? <CheckCheck /> : ""}
                         Medium
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         onClick={() => field.onChange("High")}
-                        className={`bg-red-300 ${
-                          field.value === "High" ? "bg-muted" : ""
-                        }`}
+                        className={`bg-red-300 rounded-lg `}
                       >
+                        {field.value === "High" ? <CheckCheck /> : ""}
                         High
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </FormControl>
-                <FormMessage />
+                <FormMessage className="text-red-600" />
               </FormItem>
             )}
           />
@@ -477,22 +603,26 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
             name="isPersonal"
             render={({ field }) => (
               <FormItem className="flex space-y-0 p-1">
-                <FormLabel className="w-1/4 pt-3 text-start px-2">
+                <FormLabel className="w-1/4 pt-3 text-start px-1">
                   Personal
                 </FormLabel>
                 <FormControl className="w-3/4 pt-3 ">
                   <div className="flex space-x-1">
                     <Checkbox />
-                    <span className="text-sm text-nowrap text-red-600">
+                    <p className="text-xs text-nowrap">
                       (Select Only if this Event is Personal)
-                    </span>
+                    </p>
                   </div>
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" onClick={form.handleSubmit(onSubmit)}>
+          <Button
+            type="submit"
+            className="bg-sky-200 w-2/5 flex"
+            onClick={form.handleSubmit(onSubmit)}
+          >
             Submit
           </Button>
         </form>
@@ -502,17 +632,21 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
 };
 
 const eventFormSchema = z.object({
-  title: z
-    .string()
-    .min(3, { message: "Must be 3 or more character(s)" })
-    .max(20),
-  description: z
-    .string()
-    .min(10, { message: "Must be 3 or more character(s)" })
-    .max(50)
-    .optional(),
+  title: z.string().min(3).max(20),
+  description: z.string().min(10).max(50).optional(),
   startDate: z.date(),
   endDate: z.date(),
   isImportant: z.string(),
   isPersonal: z.number(),
+  users: z
+    .array(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        email: z.string(),
+      })
+    )
+    .min(0)
+    .max(5, { message: "Only 5 guests are Allowed" })
+    .optional(),
 });

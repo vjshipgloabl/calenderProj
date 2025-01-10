@@ -15,7 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { X } from "lucide-react";
+import { CircleX, X } from "lucide-react";
 import { AddEvent } from "@/pages/AddEvent";
 
 export const PopOverComponent = ({
@@ -38,17 +38,20 @@ export const PopOverComponent = ({
   console.log("here", slotDetails);
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent className="p-2 border-2 rounded-lg">
-        <AlertDialogHeader className="z-100">
-          <AlertDialogTitle className="flex justify-between bg-amber-100 border-8 border-gray-900 rounded-lg h-12 p-2 w-full ">
-            <div className="">
+      <AlertDialogContent className="p-2 border-none rounded-xl bg-sky-50">
+        <AlertDialogHeader className="border-0 rounded-md">
+          <AlertDialogTitle className="flex justify-between rounded-md bg-sky-200 h-10 w-full  text-gray-600  ">
+            <div className="text-lg py-1 px-3">
               <h3>Events</h3>
             </div>
-            <div className="cursor-pointer" onClick={() => setOpen(false)}>
-              <X />
+            <div
+              className="cursor-pointer py-2 px-2"
+              onClick={() => setOpen(false)}
+            >
+              <CircleX className="" />
             </div>
           </AlertDialogTitle>
-          <AlertDialogDescription className="z-100">
+          <AlertDialogDescription className="z-100 bg-sky-100 border-none sm:rounded-xl">
             {event.length !== 0 ? (
               event.filter((evt) => {
                 const eventStart = new Date(evt.start);
@@ -105,12 +108,6 @@ export const PopOverComponent = ({
             <AddEvent slotDetails={slotDetails} />
           </AlertDialogDescription>
         </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setOpen(false)}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction>Add Event</AlertDialogAction>
-        </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   );
