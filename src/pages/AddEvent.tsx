@@ -49,7 +49,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { userList } from "@/extra/userList";
 import { Calendar } from "@/components/ui/calendar";
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { format } from "date-fns";
 import { Textarea } from "@/components/ui/textarea";
 import { useEventStore } from "@/zustand/store";
