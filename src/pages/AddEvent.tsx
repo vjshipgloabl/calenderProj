@@ -173,10 +173,10 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                             (Select Max 5 guest)
                           </span>
                         </div>
-                        <PopoverContent className="w-full p-0 bg-slate-100 rounded-lg max-h-72 overflow-y-auto">
+                        <PopoverContent className="w-full p-0 bg-sky-100 rounded-lg max-h-72 overflow-y-auto">
                           <Command className="overflow-hidden">
                             <CommandInput placeholder="Search User" />
-                            <CommandList className="max-h-60 overflow-y-auto">
+                            <CommandList className="max-h-60 overflow-y-auto bg-sky-200">
                               <CommandEmpty>No User Available</CommandEmpty>
                               <CommandGroup>
                                 {userList.map((user) => (
@@ -201,7 +201,15 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                         : [...currentUsers, user];
                                       field.onChange(updatedValue);
                                     }}
-                                    className="gap-0 text-wrap text-xs rounded-lg bg-gray-200 mt-1 w-full border-2"
+                                    // className="gap-0 text-wrap text-xs rounded-lg bg-sky-400 mt-1 w-full"
+                                    className={cn(
+                                      "w-full pl-3 text-left font-normal ",
+                                      (field.value || []).some(
+                                        (u) => u.name === user.name
+                                      )
+                                        ? "bg-sky-800 text-sky-200"
+                                        : ""
+                                    )}
                                   >
                                     <Check
                                       className={cn(
@@ -255,7 +263,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full">
                   <FormLabel className="text-start">
-                    Start date & time (12h)
+                    Start date & time (MM-DD-YYYY)
                   </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -277,18 +285,20 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
-                      <div className="sm:flex z-150">
+                      <div className="flex z-150">
                         <Calendar
                           mode="single"
                           selected={field.value ? field.value : start}
                           onSelect={handlestartSelect}
                           initialFocus
-                          className="bg-white"
+                          className="bg-sky-200 text-sky-800 "
                         />
-                        <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x ">
-                          <ScrollArea className="w-64 sm:w-auto bg-white ">
+                        <div className="flex flex-col sm:flex-row sm:h-auto divide-y sm:divide-y-0 sm:divide-x ">
+                          <ScrollArea className="w-64 sm:h-auto sm:w-auto bg-sky-200 text-sky-800 ">
                             <div className="flex sm:flex-col p-3 gap-0">
-                              <p>Hrs</p>
+                              <p className="mt-1 text-sm font-medium px-4 py-1 rounded-2xl bg-sky-800 text-gray-200">
+                                Hrs
+                              </p>
                               {Array.from({ length: 12 }, (_, i) => i + 1)
                                 .reverse()
                                 .map((hour) => (
@@ -298,10 +308,10 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                     variant={
                                       field.value &&
                                       field.value.getHours() % 12 === hour % 12
-                                        ? "default"
+                                        ? "selected"
                                         : "ghost"
                                     }
-                                    className="sm:w-full shrink-0 aspect-square h-6 w-6 gap-5 p-0"
+                                    className="sm:w-full shrink-0 aspect-square h-6 w-6 gap-5 p-0 hover:bg-sky-800 hover:text-white"
                                     onClick={() =>
                                       handleTimeChange(
                                         "hour",
@@ -315,9 +325,11 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                 ))}
                             </div>
                           </ScrollArea>
-                          <ScrollArea className="w-64 sm:w-auto bg-white">
+                          <ScrollArea className="w-64 sm:w-auto bg-sky-200 text-sky-800 ">
                             <div className="flex sm:flex-col p-3 gap-0">
-                              <p>Min</p>
+                              <p className="mt-1 text-sm font-medium px-4 py-1 rounded-2xl bg-sky-800 text-gray-200">
+                                Min
+                              </p>
                               {Array.from({ length: 12 }, (_, i) => i * 5).map(
                                 (minute) => (
                                   <Button
@@ -326,10 +338,10 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                     variant={
                                       field.value &&
                                       field.value.getMinutes() === minute
-                                        ? "default"
+                                        ? "selected"
                                         : "ghost"
                                     }
-                                    className="sm:w-full shrink-0 aspect-square h-6 w-6 gap-5 p-0"
+                                    className="sm:w-full shrink-0 aspect-square h-6 w-6 gap-5 p-0 hover:bg-sky-800 hover:text-white "
                                     onClick={() =>
                                       handleTimeChange(
                                         "minute",
@@ -344,7 +356,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                               )}
                             </div>
                           </ScrollArea>
-                          <ScrollArea className="bg-white">
+                          <ScrollArea className="bg-sky-200 text-sky-800 ">
                             <div className="flex sm:flex-col p-2">
                               {["AM", "PM"].map((ampm) => (
                                 <Button
@@ -356,10 +368,10 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                       field.value.getHours() < 12) ||
                                       (ampm === "PM" &&
                                         field.value.getHours() >= 12))
-                                      ? "default"
+                                      ? "selected"
                                       : "ghost"
                                   }
-                                  className="sm:w-full shrink-0 aspect-square"
+                                  className="sm:w-full shrink-0 aspect-square hover:bg-sky-800 hover:text-white"
                                   onClick={() =>
                                     handleTimeChange("ampm", ampm, "start")
                                   }
@@ -385,7 +397,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
               render={({ field }) => (
                 <FormItem className="flex flex-col w-full">
                   <FormLabel className="text-start">
-                    End date & time (12h)
+                    End date & time (MM-DD-YYYY)
                   </FormLabel>
                   <Popover>
                     <PopoverTrigger asChild>
@@ -407,7 +419,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                       </FormControl>
                     </PopoverTrigger>
                     <PopoverContent className="w-auto p-0">
-                      <div className="sm:flex">
+                      <div className="flex">
                         <Calendar
                           mode="single"
                           selected={
@@ -415,12 +427,14 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                           }
                           onSelect={handlestartSelect}
                           initialFocus
-                          className="bg-white"
+                          className="bg-sky-200 text-sky-800 "
                         />
-                        <div className="flex flex-col sm:flex-row sm:h-[300px] divide-y sm:divide-y-0 sm:divide-x">
-                          <ScrollArea className="w-64 sm:w-auto bg-white">
+                        <div className="flex flex-col bg-white sm:flex-row sm:h-auto divide-y sm:divide-y-0 sm:divide-x">
+                          <ScrollArea className="w-64 sm:w-auto bg-sky-200 text-sky-800 rounded-md">
                             <div className="flex sm:flex-col p-3 gap-0">
-                              <p>Hrs</p>
+                              <p className="mt-1 text-sm font-medium px-4 py-1 rounded-2xl bg-sky-800 text-gray-200">
+                                Hrs
+                              </p>
                               {Array.from({ length: 12 }, (_, i) => i + 1)
                                 .reverse()
                                 .map((hour) => (
@@ -430,10 +444,10 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                     variant={
                                       field.value &&
                                       field.value.getHours() % 12 === hour % 12
-                                        ? "default"
+                                        ? "selected"
                                         : "ghost"
                                     }
-                                    className="sm:w-full shrink-0 aspect-square h-6 w-6 gap-5 p-0"
+                                    className="sm:w-full shrink-0 aspect-square h-6 w-6 gap-5 p-0 hover:bg-sky-800 hover:text-white"
                                     onClick={() =>
                                       handleTimeChange(
                                         "hour",
@@ -447,9 +461,11 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                 ))}
                             </div>
                           </ScrollArea>
-                          <ScrollArea className="w-64 sm:w-auto bg-white">
+                          <ScrollArea className="w-64 sm:w-auto bg-sky-200 text-sky-800 rounded-md">
                             <div className="flex sm:flex-col p-3 gap-0">
-                              <p>Min</p>
+                              <p className="mt-1 text-sm font-medium px-4 py-1 rounded-2xl bg-sky-800 text-gray-200">
+                                Min
+                              </p>
                               {Array.from({ length: 12 }, (_, i) => i * 5).map(
                                 (minute) => (
                                   <Button
@@ -458,10 +474,10 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                     variant={
                                       field.value &&
                                       field.value.getMinutes() === minute
-                                        ? "default"
+                                        ? "selected"
                                         : "ghost"
                                     }
-                                    className="sm:w-full shrink-0 aspect-square  h-6 w-6 gap-2 p-0"
+                                    className="sm:w-full shrink-0 aspect-square  h-6 w-6 gap-2 p-0 bg-sky-200 text-sky-800 hover:bg-sky-800 hover:text-white"
                                     onClick={() =>
                                       handleTimeChange(
                                         "minute",
@@ -475,12 +491,8 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                 )
                               )}
                             </div>
-                            <ScrollBar
-                              orientation="horizontal"
-                              className="sm:hidden"
-                            />
                           </ScrollArea>
-                          <ScrollArea className="bg-white">
+                          <ScrollArea className="bg-sky-200 text-sky-800">
                             <div className="flex sm:flex-col p-2">
                               {["AM", "PM"].map((ampm) => (
                                 <Button
@@ -492,10 +504,10 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                                       field.value.getHours() < 12) ||
                                       (ampm === "PM" &&
                                         field.value.getHours() >= 12))
-                                      ? "default"
+                                      ? "selected"
                                       : "ghost"
                                   }
-                                  className="sm:w-full shrink-0 aspect-square"
+                                  className="sm:w-full shrink-0 aspect-square hover:bg-sky-800 hover:text-white"
                                   onClick={() =>
                                     handleTimeChange("ampm", ampm, "end")
                                   }
