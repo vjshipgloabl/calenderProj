@@ -1,0 +1,34 @@
+/* Add border to date cells */
+.rbc-calendar .rbc-header {
+  color: #7eb1c9;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
+  margin: 2px;
+}
+
+.rbc-event {
+  background-color: #df0a66 !important; /* Custom event color */
+  color: white; /* Text color for events */
+}
+
+.rbc-row {
+  border: none;
+}
+
+.rbc-date-cell {
+  border: none;
+}
+
+.rbc-calendar .rbc-month-row .rbc-row-bg .rbc-day-bg {
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  border-left: none;
+  margin: 4px;
+}
+
+.rbc-month-view {
+  border: none;
+}

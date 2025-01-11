@@ -5,7 +5,11 @@ type BodyProps = {
 };
 
 const Body: React.FC<BodyProps> = ({ children }) => {
-  return <div className="top-16 relative h-screen bg-sky-800">{children}</div>;
+  return (
+    <section className="top-16 p-2 relative h-screen bg-sky-100">
+      {children} {/* Render children here */}
+    </section>
+  );
 };
 
 export default Body;

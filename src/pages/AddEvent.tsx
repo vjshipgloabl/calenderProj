@@ -618,7 +618,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
                 </FormLabel>
                 <FormControl className="w-3/4 pt-3 ">
                   <div className="flex space-x-1">
-                    <Checkbox />
+                    <Checkbox {...field} />
                     <p className="text-xs text-nowrap">
                       (Select Only if this Event is Personal)
                     </p>
