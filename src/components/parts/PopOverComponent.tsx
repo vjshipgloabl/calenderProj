@@ -1,13 +1,9 @@
 import {
   AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import {
   Accordion,
@@ -15,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { CircleX, X } from "lucide-react";
+import { CircleX } from "lucide-react";
 import { AddEvent } from "@/pages/AddEvent";
 
 export const PopOverComponent = ({
@@ -35,7 +31,6 @@ export const PopOverComponent = ({
   }[];
   slotDetails: any;
 }) => {
-  console.log("here", slotDetails);
   return (
     <AlertDialog open={open}>
       <AlertDialogContent className="p-2 border-none rounded-xl bg-sky-50">
