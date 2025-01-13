@@ -12,20 +12,19 @@ const Dashboard = () => {
   return (
     <div className="sm:flex">
       <CalenderView />
-      <EventsCard2 />
+      <UpComingEvents />
     </div>
   );
 };
 export default Dashboard;
 
-const EventsCard2 = () => {
+const UpComingEvents = () => {
   return (
-    <Card className="w-1/3 max-h-screen ml-2 rounded-3xl bg-sky-900">
+    <Card className="md:w-1/3 w-full max-h-screen md:ml-2 rounded-3xl bg-sky-200 text-sky-800">
       <CardHeader>
-        <CardTitle>Card Title</CardTitle>
-        <CardDescription>Card Description</CardDescription>
+        <CardTitle>Up Coming Events</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="">
         <p>Card Content</p>
       </CardContent>
       <CardFooter>

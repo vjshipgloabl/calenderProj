@@ -24,6 +24,7 @@ import {
   CheckCheck,
   ChevronDown,
   ChevronsUpDown,
+  CircleUserRound,
   CircleX,
   Eye,
 } from "lucide-react";
@@ -55,10 +56,21 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEventStore } from "@/zustand/store";
 import { eventFormSchema } from "@/schema/eventFormSchema";
 
-export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
+import useMediaQuery from "@/hooks/useMediaQuery";
+import { ClickEye, ToolComponent } from "@/components/parts/Tooltip";
+
+export const AddEvent = ({
+  slotDetails,
+  setShowPopover,
+}: {
+  slotDetails: any;
+  setShowPopover: (open: boolean) => void;
+}) => {
   const dispatch = useEventStore((state: any) => state.dispatch);
   const start = new Date(slotDetails.start);
   const end = new Date(slotDetails.end || slotDetails.start);
+  const isMobile = useMediaQuery("(max-width: 470px)");
+  console.log("wer", isMobile);
 
   const [open, setOpen] = useState(false);
 
@@ -77,6 +89,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
 
   const onSubmit = async (data: z.infer<typeof eventFormSchema>) => {
     data = dispatch({ type: "ADD_EVENT", payload: data });
+    setShowPopover(false);
   };
 
   function handlestartSelect(date: Date | undefined) {
@@ -125,136 +138,7 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
   return (
     <div className="w-full p-2 text-gray-600 z-150">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="flex justify-between ">
-                  Title <FormMessage className="text-red-600" />
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Title"
-                    className=""
-                    type="text"
-                    {...field}
-                  />
-                </FormControl>
-              </FormItem>
-            )}
-          />
-          <div className="w-full z-150">
-            <FormField
-              control={form.control}
-              name="users"
-              render={({ field }) => (
-                <FormItem>
-                  <div className="flex">
-                    <FormLabel className="w-2/4 pt-3 text-start px-1">
-                      Add Guests
-                    </FormLabel>
-                    <FormControl className="w-3/4">
-                      <Popover open={open} onOpenChange={setOpen}>
-                        <div className="flex flex-col w-full">
-                          <PopoverTrigger asChild>
-                            <Button
-                              variant="outline"
-                              role="combobox"
-                              aria-expanded={open}
-                              className="w-full justify-between"
-                            >
-                              Search & Select User
-                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                            </Button>
-                          </PopoverTrigger>
-                          <span className="text-xs pl-2 text-end">
-                            (Select Max 5 guest)
-                          </span>
-                        </div>
-                        <PopoverContent className="w-full p-0 bg-sky-100 rounded-lg max-h-72 overflow-y-auto">
-                          <Command className="overflow-hidden">
-                            <CommandInput placeholder="Search User" />
-                            <CommandList className="max-h-60 overflow-y-auto bg-sky-200">
-                              <CommandEmpty>No User Available</CommandEmpty>
-                              <CommandGroup>
-                                {userList.map((user) => (
-                                  <CommandItem
-                                    key={user.id}
-                                    value={user.email}
-                                    onSelect={() => {
-                                      const currentUsers = field.value || []; // Fallback to empty array
-                                      if (currentUsers.length > 4) {
-                                        console.log(
-                                          "herer",
-                                          currentUsers.length
-                                        );
-                                      }
-                                      const isUserSelected = currentUsers.some(
-                                        (u) => u.email === user.email
-                                      );
-                                      const updatedValue = isUserSelected
-                                        ? currentUsers.filter(
-                                            (u) => u.email !== user.email
-                                          )
-                                        : [...currentUsers, user];
-                                      field.onChange(updatedValue);
-                                    }}
-                                    // className="gap-0 text-wrap text-xs rounded-lg bg-sky-400 mt-1 w-full"
-                                    className={cn(
-                                      "w-full pl-3 text-left font-normal ",
-                                      (field.value || []).some(
-                                        (u) => u.name === user.name
-                                      )
-                                        ? "bg-sky-800 text-sky-200"
-                                        : ""
-                                    )}
-                                  >
-                                    <Check
-                                      className={cn(
-                                        "mr-2 h-4 w-4",
-                                        (field.value || []).some(
-                                          (u) => u.name === user.name
-                                        )
-                                          ? "opacity-100"
-                                          : "opacity-0"
-                                      )}
-                                    />
-                                    <div>
-                                      <p>{user.name}</p>
-                                      <p>{user.email}</p>
-                                    </div>
-                                  </CommandItem>
-                                ))}
-                              </CommandGroup>
-                            </CommandList>
-                          </Command>
-                        </PopoverContent>
-                      </Popover>
-                    </FormControl>
-                  </div>
-                  <FormMessage className="text-red-600" />
-                </FormItem>
-              )}
-            />
-
-            <div className="flex flex-col pt-2 justify-end">
-              {form.watch("users")?.map((user) => (
-                <Badge
-                  key={user.id}
-                  className="bg-gray-200 text-gray-500 text-xs font-sans mb-2 px-4 flex justify-between"
-                  variant="outline"
-                >
-                  <div>{user.email}</div>
-                  <div className="flex">
-                    <Eye className="mr-2" />
-                    <CircleX onClick={() => handleRemoveUser(user.id)} />
-                  </div>
-                </Badge>
-              ))}
-            </div>
-          </div>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <div className="flex justify-between w-full space-x-3 ">
             {/* start Date */}
             <FormField
@@ -526,6 +410,139 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
               )}
             />
           </div>
+          <div className="w-full z-150">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <div className="flex">
+                    <FormLabel className="w-2/4 pt-3 text-start ">
+                      Title
+                    </FormLabel>
+                    <FormControl className="w-2/4">
+                      <Input
+                        placeholder="Title"
+                        className="w-full"
+                        type="text"
+                        {...field}
+                      />
+                    </FormControl>
+                  </div>
+                  <FormMessage className="text-red-600" />
+                </FormItem>
+              )}
+            />
+          </div>
+          <FormField
+            control={form.control}
+            name="users"
+            render={({ field }) => (
+              <FormItem>
+                <div className="flex">
+                  <FormLabel className="w-2/4 pt-3 text-start">
+                    Add Guests
+                  </FormLabel>
+                  <FormControl className="w-2/4">
+                    <Popover open={open} onOpenChange={setOpen}>
+                      <div className="flex flex-col w-full">
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={open}
+                            className="w-full justify-between"
+                          >
+                            Search & Select User
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <span className="text-xs pl-2 text-end">
+                          (Select Max 5 guest)
+                        </span>
+                      </div>
+                      <PopoverContent className="w-full p-0 bg-sky-100 rounded-lg max-h-72 overflow-y-auto">
+                        <Command className="overflow-hidden">
+                          <CommandInput placeholder="Search User" />
+                          <CommandList className="max-h-60 overflow-y-auto bg-sky-200 w-full">
+                            <CommandEmpty>No User Available</CommandEmpty>
+                            <CommandGroup>
+                              {userList.map((user) => (
+                                <CommandItem
+                                  key={user.id}
+                                  value={user.email}
+                                  onSelect={() => {
+                                    const currentUsers = field.value || []; // Fallback to empty array
+                                    if (currentUsers.length > 4) {
+                                      console.log("herer", currentUsers.length);
+                                    }
+                                    const isUserSelected = currentUsers.some(
+                                      (u) => u.email === user.email
+                                    );
+                                    const updatedValue = isUserSelected
+                                      ? currentUsers.filter(
+                                          (u) => u.email !== user.email
+                                        )
+                                      : [...currentUsers, user];
+                                    field.onChange(updatedValue);
+                                  }}
+                                  // className="gap-0 text-wrap text-xs rounded-lg bg-sky-400 mt-1 w-full"
+                                  className={cn(
+                                    "w-full pl-3 text-left font-normal ",
+                                    (field.value || []).some(
+                                      (u) => u.name === user.name
+                                    )
+                                      ? "bg-sky-800 text-sky-200"
+                                      : ""
+                                  )}
+                                >
+                                  <Check
+                                    className={cn(
+                                      "mr-2 h-4 w-4",
+                                      (field.value || []).some(
+                                        (u) => u.name === user.name
+                                      )
+                                        ? "opacity-100"
+                                        : "opacity-0"
+                                    )}
+                                  />
+                                  <div>
+                                    <p>{user.name}</p>
+                                    <p>{user.email}</p>
+                                  </div>
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </CommandList>
+                        </Command>
+                      </PopoverContent>
+                    </Popover>
+                  </FormControl>
+                </div>
+                <FormMessage className="text-red-600" />
+              </FormItem>
+            )}
+          />
+
+          {form.watch("users")?.map((user) => (
+            <div className="flex flex-col justify-end space-y-0">
+              <Badge
+                key={user.id}
+                className="bg-gray-200 py-0  text-gray-500 text-xs font-sans px-4 flex justify-between"
+                variant="outline"
+              >
+                <div>{user.email}</div>
+                <div className="flex">
+                  {!isMobile ? (
+                    <ToolComponent user={user} />
+                  ) : (
+                    <ClickEye user={user} />
+                  )}
+                  <CircleX onClick={() => handleRemoveUser(user.id)} />
+                </div>
+              </Badge>
+            </div>
+          ))}
 
           <FormField
             control={form.control}
@@ -533,11 +550,15 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
             render={({ field }) => (
               <FormItem>
                 <div className="flex">
-                  <FormLabel className="w-1/4 pt-3 text-start px-1">
+                  <FormLabel className="w-2/4 pt-3 text-start px-1">
                     Description
                   </FormLabel>
-                  <FormControl className="w-3/4">
-                    <Textarea placeholder="Add Event Details... " {...field} />
+                  <FormControl className="w-2/4">
+                    <Textarea
+                      placeholder="Add Event Details... "
+                      className="w-full"
+                      {...field}
+                    />
                   </FormControl>
                 </div>
                 <FormMessage className="text-red-600" />
@@ -549,10 +570,10 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
             name="isImportant"
             render={({ field }) => (
               <FormItem className="flex space-y-0 text-gray-600">
-                <FormLabel className="w-1/4 pt-3 text-start px-1">
+                <FormLabel className="w-2/4 pt-3 text-start px-1">
                   Select Priority
                 </FormLabel>
-                <FormControl className="w-3/4">
+                <FormControl className="w-2/4 flex items-start">
                   <DropdownMenu>
                     <DropdownMenuTrigger
                       asChild
@@ -612,11 +633,11 @@ export const AddEvent = ({ slotDetails }: { slotDetails: any }) => {
             control={form.control}
             name="isPersonal"
             render={({ field }) => (
-              <FormItem className="flex space-y-0 p-1">
-                <FormLabel className="w-1/4 pt-3 text-start px-1">
+              <FormItem className="flex space-y-0">
+                <FormLabel className="w-2/4  text-start px-1">
                   Personal
                 </FormLabel>
-                <FormControl className="w-3/4 pt-3 ">
+                <FormControl className="w-2/4  ">
                   <div className="flex space-x-1">
                     <Checkbox {...field} />
                     <p className="text-xs text-nowrap">

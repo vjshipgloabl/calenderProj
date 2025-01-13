@@ -32,3 +32,16 @@
 .rbc-month-view {
   border: none;
 }
+.rbc-time-slot {
+  pointer-events: auto;
+}
+
+.rbc-calendar {
+  touch-action: manipulation;
+}
+
+.rbc-toolbar-label {
+  font-weight: bolder;
+  font-size: xx-large;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+}

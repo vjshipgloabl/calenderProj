@@ -33,9 +33,9 @@ export const PopOverComponent = ({
 }) => {
   return (
     <AlertDialog open={open}>
-      <AlertDialogContent className="p-2 border-none rounded-xl bg-sky-50">
+      <AlertDialogContent className="p-2 border-none rounded-xl bg-sky-50 ">
         <AlertDialogHeader className="border-0 rounded-md">
-          <AlertDialogTitle className="flex justify-between rounded-md bg-sky-200 h-10 w-full  text-gray-600  ">
+          <AlertDialogTitle className="flex justify-between rounded-md bg-sky-200 h-10 w-full  text-sky-800">
             <div className="text-lg py-1 px-3">
               <h3>Events</h3>
             </div>
@@ -100,7 +100,7 @@ export const PopOverComponent = ({
             ) : (
               ""
             )}
-            <AddEvent slotDetails={slotDetails} />
+            <AddEvent slotDetails={slotDetails} setShowPopover={setOpen} />
           </AlertDialogDescription>
         </AlertDialogHeader>
       </AlertDialogContent>

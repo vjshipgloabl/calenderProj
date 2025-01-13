@@ -6,11 +6,11 @@ export interface Event {
   endDate: String;
   description: String;
   location: String;
-  isAllDay: Boolean;
-  isDone: Boolean;
-  isImportant: Boolean;
-  isPersonal: Boolean;
-  isWork: Boolean;
+  isAllDay: boolean;
+  isDone: boolean;
+  isImportant: boolean;
+  isPersonal: boolean;
+  isWork: boolean;
   users: [];
 }
 

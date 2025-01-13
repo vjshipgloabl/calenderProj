@@ -14,6 +14,7 @@ export const CalenderView = () => {
   const [showPopover, setShowPopover] = useState(false);
   const [slotDetails, setSlotDetails] = useState<[]>([]);
   const localizer = momentLocalizer(moment);
+  console.log(localizer);
 
   const storedEvents = useEventStore((state: any) => state.events);
 
@@ -33,14 +34,15 @@ export const CalenderView = () => {
       <CardContent>
         <Calendar
           localizer={localizer}
-          startAccessor="start"
-          endAccessor="end"
+          startAccessor={(e) => new Date(e.start)}
+          endAccessor={(e) => new Date(e.end)}
           style={{ height: "500px", borderStyle: "double" }} // Corrected style
           events={events}
           onSelectSlot={onSelectSlot}
           onSelectEvent={(event) => console.log("Event selected:", event)}
           selectable
           className=""
+          longPressThreshold={10}
         />
         <PopOverComponent
           open={showPopover}
