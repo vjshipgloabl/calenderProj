@@ -36,7 +36,7 @@ export const CalenderView = () => {
           localizer={localizer}
           startAccessor={(e) => new Date(e.start)}
           endAccessor={(e) => new Date(e.end)}
-          style={{ height: "500px", borderStyle: "double" }} // Corrected style
+          style={{ height: "500px", borderStyle: "double" }}
           events={events}
           onSelectSlot={onSelectSlot}
           onSelectEvent={(event) => console.log("Event selected:", event)}

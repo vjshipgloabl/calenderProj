@@ -1,6 +1,9 @@
 import { z } from "zod";
 
 export const eventFormSchema = z.object({
+  id: z
+    .string()
+    .default(() => new Date().toISOString().replace(/[-:.TZ]/g, "")),
   title: z.string().min(3).max(20),
   description: z.string().min(10).max(50).optional(),
   start: z.date(),

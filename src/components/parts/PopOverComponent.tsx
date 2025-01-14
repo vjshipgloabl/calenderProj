@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/accordion";
 import { CircleX } from "lucide-react";
 import { AddEvent } from "@/pages/AddEvent";
+import { useState } from "react";
 
 export const PopOverComponent = ({
   open,
@@ -31,17 +32,22 @@ export const PopOverComponent = ({
   }[];
   slotDetails: any;
 }) => {
+  const [activeStep, setActiveStep] = useState<number | null>(null);
+  const [openAddEvent, setOpenAddEvent] = useState<boolean>(false);
   return (
     <AlertDialog open={open}>
       <AlertDialogContent className="p-2 border-none rounded-xl bg-sky-50 ">
         <AlertDialogHeader className="border-0 rounded-md">
-          <AlertDialogTitle className="flex justify-between rounded-md bg-sky-200 h-10 w-full  text-sky-800">
+          <AlertDialogTitle className="flex justify-between rounded-md bg-sky-200 h-10 w-full text-sky-800">
             <div className="text-lg py-1 px-3">
               <h3>Events</h3>
             </div>
             <div
               className="cursor-pointer py-2 px-2"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                setOpenAddEvent(false);
+              }}
             >
               <CircleX className="" />
             </div>
@@ -73,18 +79,26 @@ export const PopOverComponent = ({
                         eventEnd.getTime() <= slotEnd.getTime())
                     );
                   })
-                  .map((evt) => (
+                  .map((evt, index) => (
                     <Accordion
-                      className="bg-slate-500"
+                      className=""
                       type="single"
                       collapsible
-                      key={evt.id}
+                      value={String(activeStep)}
                     >
-                      <AccordionItem value={`item-${evt.id}`}>
-                        <AccordionTrigger className="bg-blue-200 text-center">
-                          {evt.title}
+                      <AccordionItem className="m-2" value={String(index)}>
+                        <AccordionTrigger
+                          className="bg-sky-200 p-3 font-sans rounded-t-lg"
+                          onClick={() =>
+                            setActiveStep(index === activeStep ? null : index)
+                          }
+                        >
+                          <p> {evt.title}</p>
+                          {/* {String(evt.id)} */}
                         </AccordionTrigger>
-                        <AccordionContent>{evt.description}</AccordionContent>
+                        <AccordionContent className="text-sky-200 text-start bg-sky-800 p-3 rounded-b-lg">
+                          {evt.description}
+                        </AccordionContent>
                       </AccordionItem>
                     </Accordion>
                   ))
@@ -100,7 +114,17 @@ export const PopOverComponent = ({
             ) : (
               ""
             )}
-            <AddEvent slotDetails={slotDetails} setShowPopover={setOpen} />
+            {!openAddEvent && (
+              <button
+                className="w-40 bg-sky-800 ml-80 font-semibold m-2 text-sky-200 h-10 rounded-lg"
+                onClick={() => setOpenAddEvent(true)}
+              >
+                Add Event
+              </button>
+            )}
+            {openAddEvent && (
+              <AddEvent slotDetails={slotDetails} setShowPopover={setOpen} />
+            )}
           </AlertDialogDescription>
         </AlertDialogHeader>
       </AlertDialogContent>

@@ -24,9 +24,7 @@ import {
   CheckCheck,
   ChevronDown,
   ChevronsUpDown,
-  CircleUserRound,
   CircleX,
-  Eye,
 } from "lucide-react";
 
 import {

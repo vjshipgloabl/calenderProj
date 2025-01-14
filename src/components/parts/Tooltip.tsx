@@ -4,14 +4,13 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { CircleUserRound, CircleX, Eye, X } from "lucide-react";
+import { CircleUserRound, Eye, X } from "lucide-react";
 import { Button } from "../ui/button";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogHeader,
-  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 
