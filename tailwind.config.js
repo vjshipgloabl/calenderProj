@@ -49,6 +49,13 @@ module.exports = {
           4: "hsl(var(--chart-4))",
           5: "hsl(var(--chart-5))",
         },
+        green: {
+          DEFAULT: "#a8b5b0",
+          "regal-green-50": "#f4f6f5",
+        },
+        regalBlue: {
+          DEFAULT: "#BAD8E4",
+        },
       },
       keyframes: {
         "accordion-down": {
@@ -67,10 +74,19 @@ module.exports = {
             height: "0",
           },
         },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+        shimmer: {
+          from: {
+            backgroundPosition: "0 0",
+          },
+          to: {
+            backgroundPosition: "-200% 0",
+          },
+        },
+        animation: {
+          "accordion-down": "accordion-down 0.2s ease-out",
+          "accordion-up": "accordion-up 0.2s ease-out",
+          shimmer: "shimmer 2s linear infinite",
+        },
       },
     },
     screens: {

@@ -1,34 +1,16 @@
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { UpComingEvents } from "@/components/UpcomingEvents";
 import { CalenderView } from "./CalenderView";
+import useMediaQuery from "@/hooks/useMediaQuery";
 
 const Dashboard = () => {
+  const isMobile = useMediaQuery("(max-width: 1020px)");
   return (
-    <div className="sm:flex">
-      <CalenderView />
-      <UpComingEvents />
-    </div>
+    <>
+      <div className="sm:flex h-screen w-full space-x-3">
+        <CalenderView />
+        {!isMobile && <UpComingEvents />}
+      </div>
+    </>
   );
 };
 export default Dashboard;
-
-const UpComingEvents = () => {
-  return (
-    <Card className="md:w-1/3 w-full max-h-screen md:ml-2 rounded-3xl bg-sky-200 text-sky-800">
-      <CardHeader>
-        <CardTitle>Up Coming Events</CardTitle>
-      </CardHeader>
-      <CardContent className="">
-        <p>Card Content</p>
-      </CardContent>
-      <CardFooter>
-        <p>Card Footer</p>
-      </CardFooter>
-    </Card>
-  );
-};

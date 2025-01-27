@@ -27,7 +27,7 @@ export const CalenderView = () => {
     setShowPopover(true);
   }, []);
   return (
-    <Card className="sm:w-2/3 h-auto rounded-3xl bg-sky-200 text-sky-800">
+    <Card className="h-fit lg:w-2/3 rounded-3xl bg-sky-100 text-sky-800">
       <CardHeader>
         <CardTitle>Event Calender</CardTitle>
       </CardHeader>

@@ -11,7 +11,7 @@ export const Header: React.FC = () => {
 const MobileView = () => {
   return (
     <>
-      <div className="top-0 z-100 fixed w-full h-16 bg-sky-600 text-sky-200 text-lg rounded-b-xl font-sans flex justify-between">
+      <div className="top-0 z-50 fixed w-full h-16 bg-sky-600 text-sky-200 text-lg rounded-b-xl font-sans flex justify-between">
         <div className="flex w-2/6 justify-center items-center pl-8">
           <img src={CalendarImage} alt="Logo" className="h-8 w-8" />
           <span className="text-sm pl-1 text-nowrap">Event Management</span>
@@ -26,7 +26,7 @@ const MobileView = () => {
 
 const BigUiView = () => {
   return (
-    <div className="top-0 z-100 fixed w-full h-16 bg-sky-600 text-sky-200 text-lg rounded-b-xl font-sans flex justify-between px-16">
+    <div className="top-0 z-50 fixed w-full h-14 bg-sky-600 text-sky-200 text-lg font-sans flex justify-between px-5">
       <div className="flex w-2/12 justify-center items-center">
         <img
           src={CalendarImage}
