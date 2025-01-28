@@ -2,7 +2,7 @@ import { ButtonsCard } from "@/components/ui/tailwindcss-buttons";
 
 export const ButtonCard = () => {
   return (
-    <div className="flex space-x-4 text-white pr-16 ">
+    <div className="flex space-x-4 text-white  ">
       <ButtonsCard className="h-fit w-fit bg-transparent border-none rounded-none">
         <button className="bg-slate-800 no-underline group cursor-pointer relative shadow-2xl shadow-zinc-900 rounded-full p-px text-xs font-semibold leading-6  text-white inline-block">
           <span className="absolute inset-0 overflow-hidden rounded-full">

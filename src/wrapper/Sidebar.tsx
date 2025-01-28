@@ -10,7 +10,7 @@ import {
 
 export const Sidebar = () => {
   return (
-    <div className="flex z-20 fixed mt-14 bg-sky-100">
+    <div className="flex z-20 fixed mt-14 bg-sky-100 h-screen">
       <aside className="min-h-screen w-60 m-4">
         <div className=" mt-4 mb-4 space-y-3">
           <div className="flex flex-col justify-center items-center font-sans w-full font-semibold text-black ">
